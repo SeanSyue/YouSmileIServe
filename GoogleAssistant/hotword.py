@@ -54,13 +54,32 @@ def process_event(event):
         event(event.Event): The current event to process.
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
-        print()
+        print("ON_CONVERSATION_TURN_STARTED")
 
     print(event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
-        print()
+        print("ON_CONVERSATION_TURN_FINISHED")
+
+    if event.type == EventType.ON_END_OF_UTTERANCE:
+        print("ON_END_OF_UTTERANCE ")
+
+    if event.type == EventType.ON_MUTED_CHANGED:
+        print("ON_MUTED_CHANGED")
+
+    if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
+        print("ON_RECOGNIZING_SPEECH_FINISHED")
+
+    if event.type == EventType.ON_RENDER_RESPONSE:
+        print("ON_RENDER_RESPONSE")
+
+    if event.type == EventType.ON_RESPONDING_FINISHED:
+        print("ON_RESPONDING_FINISHED")
+
+    if event.type == EventType.ON_RESPONDING_STARTED:
+        print("ON_RESPONDING_STARTED")
+
     if event.type == EventType.ON_DEVICE_ACTION:
         for command, params in event.actions:
             print('Do command', command, 'with params', str(params))
