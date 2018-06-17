@@ -17,6 +17,7 @@
 
 from __future__ import print_function
 
+from time import sleep
 import argparse
 import json
 import os.path
@@ -34,7 +35,6 @@ try:
 except NameError:
     FileNotFoundError = IOError
 
-
 WARNING_NOT_REGISTERED = """
     This device is not registered. This means you will not be able to use
     Device Actions or see your device in Assistant Settings. In order to
@@ -44,7 +44,7 @@ WARNING_NOT_REGISTERED = """
 """
 
 
-def process_event(event):
+def process_event(event, assistant_):
     """Pretty prints events.
 
     Prints all events that occur with two spaces between each new
@@ -80,7 +80,42 @@ def process_event(event):
     if event.type == EventType.ON_RESPONDING_STARTED:
         print("ON_RESPONDING_STARTED")
 
+    if event.type == EventType.ON_MEDIA_TRACK_LOAD:
+        print("ON_MEDIA_TRACK_LOAD")
+
+    if event.type == EventType.ON_MEDIA_STATE_ERROR:
+        print("ON_MEDIA_STATE_ERROR")
+
+    if event.type == EventType.ON_MEDIA_STATE_IDLE:
+        print("ON_MEDIA_STATE_IDLE")
+    if event.type == EventType.ON_MEDIA_TRACK_PLAY:
+        print("ON_MEDIA_TRACK_PLAY")
+    if event.type == EventType.ON_MEDIA_TRACK_STOP:
+        print("ON_MEDIA_TRACK_STOP")
+    if event.type == EventType.ON_MUTED_CHANGED:
+        print("ON_MUTED_CHANGED")
+
+    if event.type == EventType.ON_NO_RESPONSE:
+        print("ON_NO_RESPONSE")
+
+    if event.type == EventType.ON_ALERT_FINISHED:
+        print("ON_ALERT_FINISHED")
+
+    if event.type == EventType.ON_ALERT_STARTED:
+        print("ON_ALERT_STARTED")
+        assistant_.send_text_query("stop")
+        sleep(2)
+        assistant_.send_text_query("what is the weather today")
+
+    if event.type == EventType.ON_START_FINISHED:
+        print("ON_START_FINISHED")
+        sleep(0.1)
+        # assistant_.send_text_query("what is the weather today")
+        assistant_.send_text_query("set alarm 3 seconds from now")
+        # assistant_.send_text_query('blink 5 times')
+
     if event.type == EventType.ON_DEVICE_ACTION:
+        print("ON_DEVICE_ACTION")
         for command, params in event.actions:
             print('Do command', command, 'with params', str(params))
             if command == "action.devices.commands.OnOff":
@@ -89,7 +124,7 @@ def process_event(event):
                 else:
                     print('Turning the LED off.')
             if command == "com.example.commands.BlinkLight":
-                number = int( params['number'] )
+                number = int(params['number'])
                 for i in range(int(number)):
                     print('Device is blinking.')
 
@@ -143,12 +178,13 @@ def main():
     # Re-register if "device_model_id" is given by the user and it differs
     # from what we previously registered with.
     should_register = (
-        args.device_model_id and args.device_model_id != device_model_id)
+            args.device_model_id and args.device_model_id != device_model_id)
 
     device_model_id = args.device_model_id or device_model_id
 
     with Assistant(credentials, device_model_id) as assistant:
         events = assistant.start()
+        # print(events)
 
         device_id = assistant.device_id
         print('device_model_id:', device_model_id)
@@ -169,8 +205,10 @@ def main():
             else:
                 print(WARNING_NOT_REGISTERED)
 
+        # assistant.set_mic_mute(False)
+
         for event in events:
-            process_event(event)
+            process_event(event, assistant)
 
 
 if __name__ == '__main__':
