@@ -1,0 +1,238 @@
+{
+    "manifest": {
+        "displayName": "You Smile I Serve",
+        "invocationName": "You Smile I Serve",
+        "category": "PRODUCTIVITY"
+    },
+    "actions": [
+        {
+            "name": "com.order.actions.MakeOrdering",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.order.intents.MakeOrdering",
+                "parameters": [
+                    {
+                        "name": "dish",
+                        "type": "Dish"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [
+                        "I want (a)? $Dish:dish", 
+                        "I would like (a)? $Dish:dish"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok, which kind of $Dish:dish would you like?"
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.order.commands.MakeOrdering",
+                                    "params": {
+                                        "dish": "$dish"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }, 
+        {
+            "name": "com.order.actions.NeedRecommendation",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.order.intents.NeedRecommendation",
+                "trigger": {
+                    "queryPatterns": [ 
+                        "I don't know", 
+                        "I'm not sure"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Would you like noodle or rice?"
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.order.commands.NeedRecommendation"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }, 
+        {
+            "name": "com.order.actions.OrderRice",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.order.intents.OrderRice",
+                "parameters": [
+                    {
+                        "name": "dish_rice",
+                        "type": "Dish_rice"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [ 
+                        "I want (a)? $Dish_rice:dish_rice", 
+                        "I would like (a)? $Dish_rice:dish_rice"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok, I got it"
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.order.commands.OrderRice",
+                                    "params": {
+                                        "dish_rice": "$Dish_rice"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }, 
+        {
+            "name": "com.order.actions.OrderNoodle",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.order.intents.OrderNoodle",
+                "parameters": [
+                    {
+                        "name": "dish_noodle",
+                        "type": "Dish_noodle"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [ 
+                        "I want (a)? $Dish_noodle:dish_noodle", 
+                        "I would like (a)? $Dish_noodle:dish_noodle"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok, I got it"
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.order.commands.OrderNoodle",
+                                    "params": {
+                                        "dish_noodle": "$Dish_noodle"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ],
+    "types": [ 
+        {
+            "name": "$Dish",
+            "entities": [
+                {
+                    "key": "noodle",
+                    "synonyms": [
+                        "noodle",
+                        "noodles"
+                    ]
+                },
+                {
+                    "key": "rice",
+                    "synonyms": [
+                        "rice"
+                    ]
+                }
+            ]
+        }, 
+        {
+            "name": "$Dish_noodle",
+            "entities": [
+                {
+                    "key": "beef noodle",
+                    "synonyms": [
+                        "beef noodle"
+                    ]
+                },
+                {
+                    "key": "chicken noodle",
+                    "synonyms": [
+                        "chicken noodle"
+                    ]
+                }
+            ]
+        }, 
+        {
+            "name": "$Dish_rice",
+            "entities": [
+                {
+                    "key": "pork rice",
+                    "synonyms": [
+                        "pork rice"
+                    ]
+                },
+                {
+                    "key": "chicken rice",
+                    "synonyms": [
+                        "chicken rice"
+                    ]
+                }
+            ]
+        }
+    ]
+}
