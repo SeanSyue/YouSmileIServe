@@ -30,6 +30,8 @@ from google.assistant.library.event import EventType
 from google.assistant.library.file_helpers import existing_file
 from google.assistant.library.device_helpers import register_device
 
+from CamUtils.CamUtils import detect_smile, scan_qrcode
+
 try:
     FileNotFoundError
 except NameError:
@@ -54,15 +56,14 @@ def on_finished_payment():
     pass
 
 
-def on_meal_ready(cam_):
+def on_meal_ready():
     # write status; camera open for smile detection
     pass
 
 
-def scan_qrcode(cam_):
-    print("[INFO] Function `scan_qrcode` called!")
-    # write status; camera open
-    pass
+# def scan_qrcode():
+#     # write status; camera open
+#     pass
 
 
 def check_available_meal():
@@ -70,7 +71,7 @@ def check_available_meal():
     pass
 
 
-def process_event(event, assistant_, cam):
+def process_event(event, assistant_):
     """Pretty prints events.
 
     Prints all events that occur with two spaces between each new
@@ -84,7 +85,7 @@ def process_event(event, assistant_, cam):
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         print("ON_CONVERSATION_TURN_STARTED")
 
-    print(event)
+    # print("event", event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
@@ -130,14 +131,13 @@ def process_event(event, assistant_, cam):
                 for i in range(int(number)):
                     print('Device is blinking.')
             if command == 'com.smile.commands.MealReady':
-                on_meal_ready(cam)
+                on_meal_ready()
             if command == 'com.smile.commands.FinishPayment':
                 on_finished_payment()
             if command == 'com.smile.commands.MakeOrdering':
                 on_make_order()
-                scan_qrcode(cam)
+                scan_qrcode()
             if command == 'com.smile.commands.RecommendNoodle':
-                # if event.type == EventType.ON_CONVERSATION_TURN_FINISHED:
                 if event.type == EventType.ON_RESPONDING_FINISHED:
                     rice_options = 'beef noodle and chicken noodle are'
                     assistant_.send_text_query('customer need noodle meal recommendation, '
@@ -213,8 +213,8 @@ def main():
     device_model_id = args.device_model_id or device_model_id
 
     with Assistant(credentials, device_model_id) as assistant:
+        is_smiled = detect_smile()
         events = assistant.start()
-        # print(events)
 
         device_id = assistant.device_id
         print('device_model_id:', device_model_id)
@@ -235,10 +235,11 @@ def main():
             else:
                 print(WARNING_NOT_REGISTERED)
 
-        cam = None
+        # cam = PiCamera()
 
-        for event in events:
-            process_event(event, assistant, cam)
+        if is_smiled is True:
+            for event in events:
+                process_event(event, assistant)
 
 
 if __name__ == '__main__':

@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData">
+  <component name="PublishConfigData" autoUpload="Always">
     <serverData>
       <paths name="pi@192.168.1.172:22">
         <serverdata>
           <mappings>
             <mapping deploy="/home/pi/WORKSPACE/YouSmileIServe/GoogleAssistant" local="$PROJECT_DIR$/GoogleAssistant" web="/" />
-            <mapping deploy="/home/pi/WORKSPACE/YouSmileIServe/CameraUtils" local="$PROJECT_DIR$/CameraUtils" web="/" />
+            <mapping deploy="/home/pi/WORKSPACE/YouSmileIServe/CameraUtils" local="$PROJECT_DIR$/CamUtils" web="/" />
+            <mapping deploy="/home/pi/WORKSPACE/YouSmileIServe" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>

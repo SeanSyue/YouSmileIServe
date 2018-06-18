@@ -1,11 +1,10 @@
 from google.cloud import vision
 from PIL import Image, ImageDraw
-import cv2, numpy as np
+import cv2
 
 client = vision.ImageAnnotatorClient()
 # Names of likelihood from google.cloud.vision.enums
-likelihood_name = ('UNKNOWN', 'VERY_UNLIKELY', 'UNLIKELY', 'POSSIBLE',
-                      'LIKELY', 'VERY_LIKELY')
+likelihood_name = ('UNKNOWN', 'VERY_UNLIKELY', 'UNLIKELY', 'POSSIBLE', 'LIKELY', 'VERY_LIKELY')
 
 class Facedetection(object):
 

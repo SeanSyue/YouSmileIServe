@@ -29,7 +29,7 @@ def display(im, decodedObjects):
       hull = cv2.convexHull(np.array([point for point in points], dtype=np.float32))
       hull = list(map(tuple, np.squeeze(hull)))
     else : 
-      hull = points;
+      hull = points
      
     # Number of points in the convex hull
     n = len(hull)
@@ -39,8 +39,8 @@ def display(im, decodedObjects):
       cv2.line(im, hull[j], hull[ (j+1) % n], (255,0,0), 3)
  
   # Display results 
-  cv2.imshow("Results", im);
-  cv2.waitKey(0);
+  cv2.imshow("Results", im)
+  cv2.waitKey(0)
  
    
 # Main 
