@@ -1,0 +1,382 @@
+{
+    "manifest": {
+        "displayName": "You Smile I Serve",
+        "invocationName": "You Smile I Serve",
+        "category": "PRODUCTIVITY"
+    },
+    "actions": [
+        {
+            "name": "com.smile.actions.MakeOrdering",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.smile.intents.MakeOrdering",
+                "parameters": [
+                    {
+                        "name": "meal",
+                        "type": "Meal"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [
+                        "I want (a)? $Meal:meal", 
+                        "I would like (a)? $Meal:meal"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok, which kind of $meal would you like?"
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.smile.commands.MakeOrdering",
+                                    "params": {
+                                        "meal": "$meal"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }, 
+        {
+            "name": "com.smile.actions.NeedRecommendation",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.smile.intents.NeedRecommendation",
+                "trigger": {
+                    "queryPatterns": [ 
+                        "I don't know", 
+                        "I'm not sure"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Would you like noodle or rice?"
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.smile.commands.NeedRecommendation"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }, 
+        {
+            "name": "com.smile.actions.OrderRice",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.smile.intents.OrderRice",
+                "parameters": [
+                    {
+                        "name": "meal_rice",
+                        "type": "Meal_rice"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [ 
+                        "I want (a)? $Meal_rice:meal_rice", 
+                        "I would like (a)? $Meal_rice:meal_rice"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok, I got it"
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.smile.commands.OrderRice",
+                                    "params": {
+                                        "meal_rice": "$Meal_rice"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }, 
+        {
+            "name": "com.smile.actions.OrderNoodle",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.smile.intents.OrderNoodle",
+                "parameters": [
+                    {
+                        "name": "meal_noodle",
+                        "type": "Meal_noodle"
+                    }
+                ],
+                "trigger": {
+                    "queryPatterns": [ 
+                        "I want (a)? $Meal_noodle:meal_noodle", 
+                        "I would like (a)? $Meal_noodle:meal_noodle"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok, I got it"
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.smile.commands.OrderNoodle",
+                                    "params": {
+                                        "meal_noodle": "$Meal_noodle"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }, 
+        {
+            "name": "com.smile.actions.StartConversation",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.smile.intents.StartConversation",
+                "trigger": {
+                    "queryPatterns": [ 
+                        "customer start ordering"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok, what would you like to eat?"
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.smile.commands.StartConversation"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }, 
+        {
+            "name": "com.smile.actions.StartPayment",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.smile.intents.StartPayment",
+                "trigger": {
+                    "queryPatterns": [ 
+                        "customer need to pay for the check"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "The meal cost 100 dollars, please confirm your payment and pay for your meal by mobile device."
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.smile.commands.StartPayment"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }, 
+        {
+            "name": "com.smile.actions.FinishPayment",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.smile.intents.FinishPayment",
+                "trigger": {
+                    "queryPatterns": [ 
+                        "customer finished payment"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Payment confirmed, your meal will be ready very soon"
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.smile.commands.FinishPayment"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }, 
+        {
+            "name": "com.smile.actions.MealReady",
+            "availability": {
+                "deviceClasses": [
+                    {
+                        "assistantSdkDevice": {}
+                    }
+                ]
+            },
+            "intent": {
+                "name": "com.smile.intents.MealReady",
+                "trigger": {
+                    "queryPatterns": [ 
+                        "meal is ready"
+                    ]
+                }
+            },
+            "fulfillment": {
+                "staticFulfillment": {
+                    "templatedResponse": {
+                        "items": [
+                            {
+                                "simpleResponse": {
+                                    "textToSpeech": "Your meal is ready, please go to the counter and take your meal"
+                                }
+                            },
+                            {
+                                "deviceExecution": {
+                                    "command": "com.smile.commands.MealReady"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ],
+    "types": [ 
+        {
+            "name": "$Meal",
+            "entities": [
+                {
+                    "key": "noodle",
+                    "synonyms": [
+                        "noodle",
+                        "noodles"
+                    ]
+                },
+                {
+                    "key": "rice",
+                    "synonyms": [
+                        "rice"
+                    ]
+                }
+            ]
+        }, 
+        {
+            "name": "$Meal_noodle",
+            "entities": [
+                {
+                    "key": "beef noodle",
+                    "synonyms": [
+                        "beef noodle"
+                    ]
+                },
+                {
+                    "key": "chicken noodle",
+                    "synonyms": [
+                        "chicken noodle"
+                    ]
+                }
+            ]
+        }, 
+        {
+            "name": "$Meal_rice",
+            "entities": [
+                {
+                    "key": "pork rice",
+                    "synonyms": [
+                        "pork rice"
+                    ]
+                },
+                {
+                    "key": "chicken rice",
+                    "synonyms": [
+                        "chicken rice"
+                    ]
+                }
+            ]
+        }
+    ]
+}

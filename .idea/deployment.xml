@@ -6,6 +6,7 @@
         <serverdata>
           <mappings>
             <mapping deploy="/home/pi/WORKSPACE/YouSmileIServe/GoogleAssistant" local="$PROJECT_DIR$/GoogleAssistant" web="/" />
+            <mapping deploy="/home/pi/WORKSPACE/YouSmileIServe/CameraUtils" local="$PROJECT_DIR$/CameraUtils" web="/" />
           </mappings>
         </serverdata>
       </paths>

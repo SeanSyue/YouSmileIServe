@@ -44,7 +44,32 @@ WARNING_NOT_REGISTERED = """
 """
 
 
-def process_event(event, assistant_):
+def on_make_order():
+    # write status
+    pass
+
+
+def on_finished_payment():
+    # set timer
+    pass
+
+
+def on_meal_ready(cam_):
+    # write status; camera open for smile detection
+    pass
+
+
+def scan_qrcode(cam_):
+    # write status; camera open
+    pass
+
+
+def check_available_meal():
+    # fetch data
+    pass
+
+
+def process_event(event, assistant_, cam):
     """Pretty prints events.
 
     Prints all events that occur with two spaces between each new
@@ -52,6 +77,8 @@ def process_event(event, assistant_):
 
     Args:
         event(event.Event): The current event to process.
+        assistant_(assistant.Assistant): Google assistant agent.
+        cam: cam
     """
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         print("ON_CONVERSATION_TURN_STARTED")
@@ -80,54 +107,55 @@ def process_event(event, assistant_):
     if event.type == EventType.ON_RESPONDING_STARTED:
         print("ON_RESPONDING_STARTED")
 
-    if event.type == EventType.ON_MEDIA_TRACK_LOAD:
-        print("ON_MEDIA_TRACK_LOAD")
-
     if event.type == EventType.ON_MEDIA_STATE_ERROR:
         print("ON_MEDIA_STATE_ERROR")
 
     if event.type == EventType.ON_MEDIA_STATE_IDLE:
         print("ON_MEDIA_STATE_IDLE")
-    if event.type == EventType.ON_MEDIA_TRACK_PLAY:
-        print("ON_MEDIA_TRACK_PLAY")
-    if event.type == EventType.ON_MEDIA_TRACK_STOP:
-        print("ON_MEDIA_TRACK_STOP")
-    if event.type == EventType.ON_MUTED_CHANGED:
-        print("ON_MUTED_CHANGED")
 
     if event.type == EventType.ON_NO_RESPONSE:
         print("ON_NO_RESPONSE")
 
-    if event.type == EventType.ON_ALERT_FINISHED:
-        print("ON_ALERT_FINISHED")
-
-    if event.type == EventType.ON_ALERT_STARTED:
-        print("ON_ALERT_STARTED")
-        # assistant_.send_text_query("stop")
-        # sleep(1.5)
-        # assistant_.send_text_query('customer start ordering')
-
     if event.type == EventType.ON_START_FINISHED:
         print("ON_START_FINISHED")
-        # sleep(1)
-        # assistant_.send_text_query('what is the weather today')
-        # assistant_.send_text_query("set alarm 3 seconds from now")
-        # assistant_.send_text_query('blink 5 times quickly')
         assistant_.send_text_query('customer start ordering')
 
     if event.type == EventType.ON_DEVICE_ACTION:
         print("ON_DEVICE_ACTION")
         for command, params in event.actions:
             print('Do command', command, 'with params', str(params))
-            if command == "action.devices.commands.OnOff":
-                if params['on']:
-                    print('Turning the LED on.')
-                else:
-                    print('Turning the LED off.')
             if command == "com.example.commands.BlinkLight":
                 number = int(params['number'])
                 for i in range(int(number)):
                     print('Device is blinking.')
+            if command == 'com.smile.commands.MealReady':
+                on_meal_ready(cam)
+            if command == 'com.smile.commands.FinishPayment':
+                on_finished_payment()
+            if command == 'com.smile.commands.OrderRice' or 'com.smile.commands.OrderNoodle':
+                on_make_order()
+                scan_qrcode(cam)
+            if command == 'com.smile.commands.RecommendNoodle':
+                # if event.type == EventType.ON_CONVERSATION_TURN_FINISHED:
+                if event.type == EventType.ON_RESPONDING_FINISHED:
+                    rice_options = 'beef noodle and chicken noodle are'
+                    assistant_.send_text_query('customer need noodle meal recommendation, '
+                                               '{} now available.'.format(rice_options))
+            if command == 'com.smile.commands.RecommendRice':
+                # if event.type == EventType.ON_CONVERSATION_TURN_FINISHED:
+                # if event.type == EventType.ON_RESPONDING_FINISHED:
+                sleep(4)
+                pass
+
+            if command == 'com.smile.commands.NeedRice':
+                rice_options = 'pork rice and chicken rice are'
+                assistant_.send_text_query('customer need rice meal recommendation, '
+                                           '{} now available.'.format(rice_options))
+
+            if command == 'com.smile.commands.NeedNoodle':
+                rice_options = 'beef noodle and chicken noodle are'
+                assistant_.send_text_query('customer need noodle meal recommendation, '
+                                           '{} now available.'.format(rice_options))
 
 
 def main():
@@ -206,10 +234,10 @@ def main():
             else:
                 print(WARNING_NOT_REGISTERED)
 
-        # assistant.set_mic_mute(False)
+        cam = None
 
         for event in events:
-            process_event(event, assistant)
+            process_event(event, assistant, cam)
 
 
 if __name__ == '__main__':
