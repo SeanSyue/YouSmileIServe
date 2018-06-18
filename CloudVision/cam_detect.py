@@ -1,3 +1,5 @@
+""" Ref: https://cloud.google.com/vision/docs/detecting-faces """
+
 import io
 import time
 import picamera
