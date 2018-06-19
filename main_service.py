@@ -126,27 +126,18 @@ def process_event(event, assistant_):
         print("ON_DEVICE_ACTION")
         for command, params in event.actions:
             print('Do command', command, 'with params', str(params))
-            if command == "com.example.commands.BlinkLight":
-                number = int(params['number'])
-                for i in range(int(number)):
-                    print('Device is blinking.')
+
             if command == 'com.smile.commands.MealReady':
                 on_meal_ready()
             if command == 'com.smile.commands.FinishPayment':
                 on_finished_payment()
             if command == 'com.smile.commands.MakeOrdering':
                 on_make_order()
-                scan_qrcode()
-            if command == 'com.smile.commands.RecommendNoodle':
-                if event.type == EventType.ON_RESPONDING_FINISHED:
-                    rice_options = 'beef noodle and chicken noodle are'
-                    assistant_.send_text_query('customer need noodle meal recommendation, '
-                                               '{} now available.'.format(rice_options))
-            if command == 'com.smile.commands.RecommendRice':
-                # if event.type == EventType.ON_CONVERSATION_TURN_FINISHED:
-                # if event.type == EventType.ON_RESPONDING_FINISHED:
-                sleep(4)
-                pass
+                is_finished = scan_qrcode()
+                if is_finished:
+                    assistant_.send_text_query('customer finished payment')
+                    sleep(5)
+                    assistant_.send_text_query('meal is ready')
 
             if command == 'com.smile.commands.NeedRice':
                 rice_options = 'pork rice and chicken rice are'
@@ -213,6 +204,7 @@ def main():
     device_model_id = args.device_model_id or device_model_id
 
     with Assistant(credentials, device_model_id) as assistant:
+        # start smile detection for activating assistant
         is_smiled = detect_smile()
         events = assistant.start()
 
@@ -234,8 +226,6 @@ def main():
                     }, f)
             else:
                 print(WARNING_NOT_REGISTERED)
-
-        # cam = PiCamera()
 
         if is_smiled is True:
             for event in events:

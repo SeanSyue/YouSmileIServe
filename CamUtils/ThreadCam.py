@@ -28,7 +28,7 @@ class ThreadCam(VideoCapture, Thread):
     def stop(self):
         """ prevent infinite loop """
         self.is_stopped = True
-        print('cam stopped!')
+        print("[INFO] Camera stopped!")
 
     def _query_frame(self):
         while not self.is_stopped:

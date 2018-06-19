@@ -54,12 +54,12 @@ def on_finished_payment():
     pass
 
 
-def on_meal_ready(cam_):
+def on_meal_ready():
     # write status; camera open for smile detection
     pass
 
 
-def scan_qrcode(cam_):
+def scan_qrcode():
     print("[INFO] Function `scan_qrcode` called!")
     # write status; camera open
     pass
@@ -70,7 +70,7 @@ def check_available_meal():
     pass
 
 
-def process_event(event, assistant_, cam):
+def process_event(event, assistant_):
     """Pretty prints events.
 
     Prints all events that occur with two spaces between each new
@@ -130,23 +130,12 @@ def process_event(event, assistant_, cam):
                 for i in range(int(number)):
                     print('Device is blinking.')
             if command == 'com.smile.commands.MealReady':
-                on_meal_ready(cam)
+                on_meal_ready()
             if command == 'com.smile.commands.FinishPayment':
                 on_finished_payment()
             if command == 'com.smile.commands.MakeOrdering':
                 on_make_order()
-                scan_qrcode(cam)
-            if command == 'com.smile.commands.RecommendNoodle':
-                # if event.type == EventType.ON_CONVERSATION_TURN_FINISHED:
-                if event.type == EventType.ON_RESPONDING_FINISHED:
-                    rice_options = 'beef noodle and chicken noodle are'
-                    assistant_.send_text_query('customer need noodle meal recommendation, '
-                                               '{} now available.'.format(rice_options))
-            if command == 'com.smile.commands.RecommendRice':
-                # if event.type == EventType.ON_CONVERSATION_TURN_FINISHED:
-                # if event.type == EventType.ON_RESPONDING_FINISHED:
-                sleep(4)
-                pass
+                scan_qrcode()
 
             if command == 'com.smile.commands.NeedRice':
                 rice_options = 'pork rice and chicken rice are'
@@ -235,10 +224,8 @@ def main():
             else:
                 print(WARNING_NOT_REGISTERED)
 
-        cam = None
-
         for event in events:
-            process_event(event, assistant, cam)
+            process_event(event, assistant)
 
 
 if __name__ == '__main__':
