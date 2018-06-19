@@ -44,6 +44,15 @@ WARNING_NOT_REGISTERED = """
 """
 
 
+def fetch_menu(menu_path):
+    with open(menu_path) as f:
+        menu_list = [item.strip() for item in f.readlines()]
+        if len(menu_list) >= 2:
+            return ' and '.join(menu_list) + ' are'
+        else:
+            return 'only' + ' and '.join(menu_list) + ' is'
+
+
 def on_make_order():
     # write status
     pass
@@ -126,16 +135,18 @@ def process_event(event, assistant_):
 
             if command == 'com.smile.commands.NeedRice':
                 print("[INFO] start commands.NeedRice")
-                rice_options = 'pork rice and chicken rice are'
+                # rice_options = 'pork rice and chicken rice are'
+                rice_options = fetch_menu('./menu/rice_menu.txt')
                 assistant_.send_text_query('customer need rice meal recommendation, '
                                            '{} now available.'.format(rice_options))
                 sleep(6.5)
                 assistant_.start_conversation()
 
             if command == 'com.smile.commands.NeedNoodle':
-                rice_options = 'beef noodle and chicken noodle are'
+                # noodle_options = 'beef noodle and chicken noodle are'
+                noodle_options = fetch_menu('./menu/noodle_menu.txt')
                 assistant_.send_text_query('customer need noodle meal recommendation, '
-                                           '{} now available.'.format(rice_options))
+                                           '{} now available.'.format(noodle_options))
                 sleep(6.5)
                 assistant_.start_conversation()
         print("[INFO] device action finished")
