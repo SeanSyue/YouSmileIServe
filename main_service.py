@@ -89,34 +89,13 @@ def process_event(event, assistant_):
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
+        assistant_.start_conversation()
         print("ON_CONVERSATION_TURN_FINISHED")
 
-    if event.type == EventType.ON_END_OF_UTTERANCE:
-        print("ON_END_OF_UTTERANCE ")
-
-    if event.type == EventType.ON_MUTED_CHANGED:
-        print("ON_MUTED_CHANGED")
-
-    if event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED:
-        print("ON_RECOGNIZING_SPEECH_FINISHED")
-
-    if event.type == EventType.ON_RENDER_RESPONSE:
-        print("ON_RENDER_RESPONSE")
-
-    if event.type == EventType.ON_RESPONDING_FINISHED:
-        print("ON_RESPONDING_FINISHED")
-
-    if event.type == EventType.ON_RESPONDING_STARTED:
-        print("ON_RESPONDING_STARTED")
-
-    if event.type == EventType.ON_MEDIA_STATE_ERROR:
-        print("ON_MEDIA_STATE_ERROR")
-
-    if event.type == EventType.ON_MEDIA_STATE_IDLE:
-        print("ON_MEDIA_STATE_IDLE")
-
-    if event.type == EventType.ON_NO_RESPONSE:
-        print("ON_NO_RESPONSE")
+    if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT:
+        print("ON_CONVERSATION_TURN_TIMEOUT ")
+        sleep(2)
+        assistant_.start_conversation()
 
     if event.type == EventType.ON_START_FINISHED:
         print("ON_START_FINISHED")
@@ -140,14 +119,19 @@ def process_event(event, assistant_):
                     assistant_.send_text_query('meal is ready')
 
             if command == 'com.smile.commands.NeedRice':
+                print("[INFO] start commands.NeedRice")
                 rice_options = 'pork rice and chicken rice are'
                 assistant_.send_text_query('customer need rice meal recommendation, '
                                            '{} now available.'.format(rice_options))
+                sleep(6)
+                assistant_.start_conversation()
 
             if command == 'com.smile.commands.NeedNoodle':
                 rice_options = 'beef noodle and chicken noodle are'
                 assistant_.send_text_query('customer need noodle meal recommendation, '
                                            '{} now available.'.format(rice_options))
+                sleep(6)
+                assistant_.start_conversation()
 
 
 def main():
