@@ -58,7 +58,7 @@ def scan_qrcode():
     camera.framerate = 30
     rawCapture = PiRGBArray(camera, size=(320, 240))
     # allow the camera to warmup
-    sleep(1)
+    sleep(3)
     # capture frames from the camera
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         # grab the raw NumPy array representing the image, then initialize the timestamp
@@ -78,5 +78,6 @@ def scan_qrcode():
         if key == ord("q"):
             break
 
+    camera.close()
     cv2.destroyAllWindows()
     return is_payed

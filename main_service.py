@@ -82,10 +82,13 @@ def process_event(event, assistant_):
         assistant_(assistant.Assistant): Google assistant agent.
         cam: cam
     """
+    print("[EVENT]", event)
+
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         print("ON_CONVERSATION_TURN_STARTED")
 
-    print("event", event)
+    if event.type == EventType.ON_MEDIA_STATE_IDLE:
+        print("ON_MEDIA_STATE_IDLE")
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
@@ -95,6 +98,8 @@ def process_event(event, assistant_):
     if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT:
         print("ON_CONVERSATION_TURN_TIMEOUT ")
         sleep(2)
+        assistant_.send_text_query('customer stopped speaking')
+        sleep(4)
         assistant_.start_conversation()
 
     if event.type == EventType.ON_START_FINISHED:
@@ -110,14 +115,18 @@ def process_event(event, assistant_):
                 on_meal_ready()
             if command == 'com.smile.commands.FinishPayment':
                 assistant_.send_text_query('meal is ready')
-                sleep(8)
+                sleep(9)
                 assistant_.start_conversation()
             if command == 'com.smile.commands.MakeOrdering':
                 on_make_order()
                 is_finished = scan_qrcode()
                 if is_finished:
                     assistant_.send_text_query('customer finished payment')
-                    sleep(8)
+                    sleep(4)
+
+            if command == 'com.smile.commands.MealReady':
+                sleep(6)
+                return True
 
             if command == 'com.smile.commands.NeedRice':
                 print("[INFO] start commands.NeedRice")
@@ -188,33 +197,38 @@ def main():
 
     device_model_id = args.device_model_id or device_model_id
 
-    with Assistant(credentials, device_model_id) as assistant:
-        # start smile detection for activating assistant
-        is_smiled = detect_smile()
-        events = assistant.start()
+    while True:
+        with Assistant(credentials, device_model_id) as assistant:
 
-        device_id = assistant.device_id
-        print('device_model_id:', device_model_id)
-        print('device_id:', device_id + '\n')
+            events = assistant.start()
 
-        # Re-register if "device_id" is different from the last "device_id":
-        if should_register or (device_id != last_device_id):
-            if args.project_id:
-                register_device(args.project_id, credentials,
-                                device_model_id, device_id)
-                pathlib.Path(os.path.dirname(args.device_config)).mkdir(
-                    exist_ok=True)
-                with open(args.device_config, 'w') as f:
-                    json.dump({
-                        'last_device_id': device_id,
-                        'model_id': device_model_id,
-                    }, f)
-            else:
-                print(WARNING_NOT_REGISTERED)
+            device_id = assistant.device_id
+            print('device_model_id:', device_model_id)
+            print('device_id:', device_id + '\n')
 
-        if is_smiled is True:
-            for event in events:
-                process_event(event, assistant)
+            # Re-register if "device_id" is different from the last "device_id":
+            if should_register or (device_id != last_device_id):
+                if args.project_id:
+                    register_device(args.project_id, credentials,
+                                    device_model_id, device_id)
+                    pathlib.Path(os.path.dirname(args.device_config)).mkdir(
+                        exist_ok=True)
+                    with open(args.device_config, 'w') as f:
+                        json.dump({
+                            'last_device_id': device_id,
+                            'model_id': device_model_id,
+                        }, f)
+                else:
+                    print(WARNING_NOT_REGISTERED)
+
+            # start smile detection for activating assistant
+            is_smiled = detect_smile()
+            if is_smiled is True:
+                assistant.set_mic_mute(False)
+                for event in events:
+                    is_over = process_event(event, assistant)
+                    if is_over:
+                        break
 
 
 if __name__ == '__main__':
