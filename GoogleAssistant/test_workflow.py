@@ -88,19 +88,23 @@ def process_event(event, assistant_):
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
         print("ON_CONVERSATION_TURN_FINISHED")
+        sleep(0.5)
         assistant_.start_conversation()
 
     if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT:
         print("ON_CONVERSATION_TURN_TIMEOUT ")
         sleep(2)
+        assistant_.send_text_query('customer stopped speaking')
+        sleep(4)
         assistant_.start_conversation()
 
     if event.type == EventType.ON_START_FINISHED:
         print("ON_START_FINISHED")
-        print("[ARGS]", event.args)
         # assistant_.send_text_query('customer start ordering')
         # assistant_.send_text_query('I need recommendation')
-        assistant_.send_text_query('I want a noodle')
+        # assistant_.send_text_query('I want a noodle')
+        assistant_.send_text_query('I want beef noodle')
+        # assistant_.send_text_query('set alarm 3 seconds from now')
 
     if event.type == EventType.ON_DEVICE_ACTION:
         print("ON_DEVICE_ACTION")
@@ -110,24 +114,29 @@ def process_event(event, assistant_):
             if command == 'com.smile.commands.MealReady':
                 on_meal_ready()
             if command == 'com.smile.commands.FinishPayment':
-                on_finished_payment()
+                # on_finished_payment()
+                assistant_.send_text_query('meal is ready')
+                sleep(8)
+                assistant_.start_conversation()
             if command == 'com.smile.commands.MakeOrdering':
                 on_make_order()
                 scan_qrcode()
+                assistant_.send_text_query('customer finished payment')
+                sleep(8)
 
             if command == 'com.smile.commands.NeedRice':
                 print("[INFO] start commands.NeedRice")
                 rice_options = 'pork rice and chicken rice are'
                 assistant_.send_text_query('customer need rice meal recommendation, '
                                            '{} now available.'.format(rice_options))
-                sleep(6)
+                sleep(6.5)
                 assistant_.start_conversation()
 
             if command == 'com.smile.commands.NeedNoodle':
                 rice_options = 'beef noodle and chicken noodle are'
                 assistant_.send_text_query('customer need noodle meal recommendation, '
                                            '{} now available.'.format(rice_options))
-                sleep(6)
+                sleep(6.5)
                 assistant_.start_conversation()
         print("[INFO] device action finished")
 
@@ -187,7 +196,7 @@ def main():
 
     with Assistant(credentials, device_model_id) as assistant:
         events = assistant.start()
-        # print(events)
+        # assistant.set_mic_mute(False)
 
         device_id = assistant.device_id
         print('device_model_id:', device_model_id)

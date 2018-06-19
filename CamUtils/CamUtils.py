@@ -14,7 +14,7 @@ def detect_smile():
     is_smiled = False
 
     cap = ThreadCam(0)
-    cap.set_prop(640, 480, 30)
+    cap.set_prop(320, 240, 30)
     cap.start()
     sleep(1)
 
@@ -58,7 +58,7 @@ def scan_qrcode():
     camera.framerate = 30
     rawCapture = PiRGBArray(camera, size=(320, 240))
     # allow the camera to warmup
-    sleep(0.1)
+    sleep(1)
     # capture frames from the camera
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         # grab the raw NumPy array representing the image, then initialize the timestamp

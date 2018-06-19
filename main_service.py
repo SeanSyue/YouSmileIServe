@@ -85,7 +85,7 @@ def process_event(event, assistant_):
     if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
         print("ON_CONVERSATION_TURN_STARTED")
 
-    # print("event", event)
+    print("event", event)
 
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
@@ -109,14 +109,15 @@ def process_event(event, assistant_):
             if command == 'com.smile.commands.MealReady':
                 on_meal_ready()
             if command == 'com.smile.commands.FinishPayment':
-                on_finished_payment()
+                assistant_.send_text_query('meal is ready')
+                sleep(8)
+                assistant_.start_conversation()
             if command == 'com.smile.commands.MakeOrdering':
                 on_make_order()
                 is_finished = scan_qrcode()
                 if is_finished:
                     assistant_.send_text_query('customer finished payment')
-                    sleep(5)
-                    assistant_.send_text_query('meal is ready')
+                    sleep(8)
 
             if command == 'com.smile.commands.NeedRice':
                 print("[INFO] start commands.NeedRice")
