@@ -113,7 +113,8 @@ def process_event(event, assistant_):
 
     if event.type == EventType.ON_START_FINISHED:
         print("ON_START_FINISHED")
-        assistant_.send_text_query('customer start ordering')
+        # assistant_.send_text_query('customer start ordering')
+        assistant_.send_text_query('I want chicken rice')
 
     if event.type == EventType.ON_DEVICE_ACTION:
         print("ON_DEVICE_ACTION")
@@ -131,11 +132,41 @@ def process_event(event, assistant_):
                 is_finished = scan_qrcode()
                 if is_finished:
                     assistant_.send_text_query('customer finished payment')
-                    sleep(4)
+                    sleep(6)
 
             if command == 'com.smile.commands.MealReady':
-                sleep(6)
+                sleep(10)
                 return True
+
+            if command == 'com.smile.commands.CheckMeal':
+                if str(params['meal_rice']) == '$meal_rice':
+                    sleep(4)
+                    with open('./menu/noodle_menu.txt'):
+                        print('[FILE OPENED]')
+                        noodle_options = fetch_menu('./menu/noodle_menu.txt')
+                    if str(params['meal_noodle']) in noodle_options:
+                        assistant_.send_text_query('order confirmed, should notify customer to pay for the meal')
+                        sleep(6.5)
+                        assistant_.start_conversation()
+                    else:
+                        assistant_.send_text_query('{} is not available, customer should try something other'
+                                                   .format(str(params['meal_noodle'])))
+                        sleep(6.5)
+                        assistant_.start_conversation()
+                if str(params['meal_noodle']) == '$meal_noodle':
+                    sleep(4)
+                    with open('./menu/rice_menu.txt'):
+                        print('[FILE OPENED]')
+                        rice_options = fetch_menu('./menu/rice_menu.txt')
+                    if str(params['meal_rice']) in rice_options:
+                        assistant_.send_text_query('order confirmed, should notify customer to pay for the meal')
+                        sleep(6.5)
+                        assistant_.start_conversation()
+                    else:
+                        assistant_.send_text_query('{} is not available, customer should try something other'
+                                                   .format(str(params['meal_rice'])))
+                        sleep(6.5)
+                        assistant_.start_conversation()
 
             if command == 'com.smile.commands.NeedRice':
                 print("[INFO] start commands.NeedRice")

@@ -8,6 +8,7 @@
             <mapping deploy="/home/pi/WORKSPACE/YouSmileIServe/GoogleAssistant" local="$PROJECT_DIR$/GoogleAssistant" web="/" />
             <mapping deploy="/home/pi/WORKSPACE/YouSmileIServe/CamUtils" local="$PROJECT_DIR$/CamUtils" web="/" />
             <mapping deploy="/home/pi/WORKSPACE/YouSmileIServe" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/home/pi/WORKSPACE/YouSmileIServe/menu" local="$PROJECT_DIR$/menu" web="/" />
           </mappings>
         </serverdata>
       </paths>
