@@ -114,7 +114,9 @@ def process_event(event, assistant_):
     if event.type == EventType.ON_START_FINISHED:
         print("ON_START_FINISHED")
         # assistant_.send_text_query('customer start ordering')
-        assistant_.send_text_query('I want chicken rice')
+        # assistant_.send_text_query('I want chicken rice')
+        # assistant_.send_text_query('I want rice')
+        assistant_.send_text_query('bye')
 
     if event.type == EventType.ON_DEVICE_ACTION:
         print("ON_DEVICE_ACTION")
@@ -184,6 +186,10 @@ def process_event(event, assistant_):
                                            '{} now available.'.format(noodle_options))
                 sleep(6)
                 assistant_.start_conversation()
+
+            if command == 'com.smile.commands.ConversationFinished':
+                sleep(6)
+                return True
 
 
 def main():
