@@ -45,39 +45,44 @@ WARNING_NOT_REGISTERED = """
     https://developers.google.com/assistant/sdk/guides/library/python/embed/register-device
 """
 
+RICE_MENU = './menu/rice_menu.txt'
+NOODLE_MENU = './menu/noodle_menu.txt'
 
-def fetch_menu(menu_path):
-    with open(menu_path) as f:
+
+def send_command(assistant_, query, delay=6.0):
+    """ Send command to trigger certain events, then assistant listen to customer's speech """
+    assistant_.send_text_query(query)
+    sleep(delay)
+    assistant_.start_conversation()
+
+
+def fetch_menu(menu_file):
+    """ Open menu file and return available meal options in text pattern """
+    sleep(4)
+    print('[FILE OPENED]')
+    with open(menu_file) as f:
         menu_list = [item.strip() for item in f.readlines()]
-        if len(menu_list) >= 2:
-            return ' and '.join(menu_list) + ' are'
-        else:
-            return 'only' + ' and '.join(menu_list) + ' is'
+
+    if len(menu_list) >= 2:
+        return ' and '.join(menu_list) + ' are'
+    else:
+        return 'only ' + ' and '.join(menu_list) + ' is'
 
 
-def on_make_order():
-    # write status
-    pass
+def check_available_meal(assistant_, params_, meal_):
+    """ Check available meal when customer ordering or asking for recommendation """
+    if meal_ == 'rice':
+        menu_file = RICE_MENU
+    elif meal_ == 'noodle':
+        menu_file = NOODLE_MENU
 
+    query = str(params_['meal_{}'.format(meal_)])
+    options = fetch_menu(menu_file)
 
-def on_finished_payment():
-    # set timer
-    pass
-
-
-def on_meal_ready():
-    # write status; camera open for smile detection
-    pass
-
-
-# def scan_qrcode():
-#     # write status; camera open
-#     pass
-
-
-def check_available_meal():
-    # fetch data
-    pass
+    if query in options:
+        send_command(assistant_, 'order confirmed, should notify customer to pay for the meal', 6.5)
+    else:
+        send_command(assistant_, '{} is not available, customer should try something other'.format(query), 6.5)
 
 
 def process_event(event, assistant_):
@@ -89,104 +94,69 @@ def process_event(event, assistant_):
     Args:
         event(event.Event): The current event to process.
         assistant_(assistant.Assistant): Google assistant agent.
-        cam: cam
     """
     print("[EVENT]", event)
 
-    if event.type == EventType.ON_CONVERSATION_TURN_STARTED:
-        print("ON_CONVERSATION_TURN_STARTED")
-
-    if event.type == EventType.ON_MEDIA_STATE_IDLE:
-        print("ON_MEDIA_STATE_IDLE")
-
+    # start new conversation automatically after each conversation turn
     if (event.type == EventType.ON_CONVERSATION_TURN_FINISHED and
             event.args and not event.args['with_follow_on_turn']):
         assistant_.start_conversation()
-        print("ON_CONVERSATION_TURN_FINISHED")
 
+    # notify customer if he/she pause for a significant amount of time
     if event.type == EventType.ON_CONVERSATION_TURN_TIMEOUT:
-        print("ON_CONVERSATION_TURN_TIMEOUT ")
         sleep(2)
-        assistant_.send_text_query('customer stopped speaking')
-        sleep(4)
-        assistant_.start_conversation()
+        send_command(assistant_, 'customer stopped speaking', 4)
 
+    # begin ordering session
     if event.type == EventType.ON_START_FINISHED:
-        print("ON_START_FINISHED")
         assistant_.send_text_query('customer start ordering')
         # assistant_.send_text_query('I want chicken rice')
         # assistant_.send_text_query('I want rice')
         # assistant_.send_text_query('bye')
 
     if event.type == EventType.ON_DEVICE_ACTION:
-        print("ON_DEVICE_ACTION")
         for command, params in event.actions:
             print('Do command', command, 'with params', str(params))
 
-            if command == 'com.smile.commands.MealReady':
-                on_meal_ready()
+            # send 'meal is ready' after payment that followed by certain delay
             if command == 'com.smile.commands.FinishPayment':
-                assistant_.send_text_query('meal is ready')
-                sleep(9)
-                assistant_.start_conversation()
+                send_command(assistant_, 'meal is ready', 9)
+
+            # scan QR code
             if command == 'com.smile.commands.MakeOrdering':
-                on_make_order()
                 is_finished = scan_qrcode()
                 if is_finished:
                     assistant_.send_text_query('customer finished payment')
                     sleep(6)
 
+            # notify that the meal is ready, then quit current ordering session
             if command == 'com.smile.commands.MealReady':
                 sleep(10)
                 return True
 
+            # check meal once customer ask for recommendation and order meal
             if command == 'com.smile.commands.CheckMeal':
                 if str(params['meal_rice']) == '$meal_rice':
-                    sleep(4)
-                    with open('./menu/noodle_menu.txt'):
-                        print('[FILE OPENED]')
-                        noodle_options = fetch_menu('./menu/noodle_menu.txt')
-                    if str(params['meal_noodle']) in noodle_options:
-                        assistant_.send_text_query('order confirmed, should notify customer to pay for the meal')
-                        sleep(6.5)
-                        assistant_.start_conversation()
-                    else:
-                        assistant_.send_text_query('{} is not available, customer should try something other'
-                                                   .format(str(params['meal_noodle'])))
-                        sleep(6.5)
-                        assistant_.start_conversation()
-                if str(params['meal_noodle']) == '$meal_noodle':
-                    sleep(4)
-                    with open('./menu/rice_menu.txt'):
-                        print('[FILE OPENED]')
-                        rice_options = fetch_menu('./menu/rice_menu.txt')
-                    if str(params['meal_rice']) in rice_options:
-                        assistant_.send_text_query('order confirmed, should notify customer to pay for the meal')
-                        sleep(6.5)
-                        assistant_.start_conversation()
-                    else:
-                        assistant_.send_text_query('{} is not available, customer should try something other'
-                                                   .format(str(params['meal_rice'])))
-                        sleep(6.5)
-                        assistant_.start_conversation()
+                    check_available_meal(assistant_, params, 'rice')
+                elif str(params['meal_noodle']) == '$meal_noodle':
+                    check_available_meal(assistant_, params, 'noodle')
 
+            # customer ask for rice meal options
             if command == 'com.smile.commands.NeedRice':
                 print("[INFO] start commands.NeedRice")
                 # rice_options = 'pork rice and chicken rice are'
-                rice_options = fetch_menu('./menu/rice_menu.txt')
-                assistant_.send_text_query('customer need rice meal recommendation, '
-                                           '{} now available.'.format(rice_options))
-                sleep(6)
-                assistant_.start_conversation()
+                rice_options = fetch_menu(RICE_MENU)
+                send_command(assistant_, 'customer need rice meal recommendation, '
+                                         '{} now available.'.format(rice_options), 6)
 
+            # customer ask for rice noodle options
             if command == 'com.smile.commands.NeedNoodle':
                 # noodle_options = 'beef noodle and chicken noodle are'
-                noodle_options = fetch_menu('./menu/noodle_menu.txt')
-                assistant_.send_text_query('customer need noodle meal recommendation, '
-                                           '{} now available.'.format(noodle_options))
-                sleep(6)
-                assistant_.start_conversation()
+                noodle_options = fetch_menu(NOODLE_MENU)
+                send_command(assistant_, 'customer need noodle meal recommendation, '
+                                         '{} now available.'.format(noodle_options), 6)
 
+            # quit session manually
             if command == 'com.smile.commands.ConversationFinished':
                 sleep(6)
                 return True
