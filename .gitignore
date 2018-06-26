@@ -1,0 +1,9 @@
+**.pyc
+**/__pycache__
+.idea/**/workspace.xml
+**/gactions
+credentials/**
+build/**
+dist/**
+.config/**
+*.egg-info/**
