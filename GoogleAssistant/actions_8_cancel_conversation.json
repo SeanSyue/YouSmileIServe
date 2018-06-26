@@ -270,6 +270,11 @@
                     "templatedResponse": {
                         "items": [
                             {
+                                "simpleResponse": {
+                                    "textToSpeech": "Ok, wait a second, I will check for noodle menu that currently available"
+                                }
+                            },
+                            {
                                 "deviceExecution": {
                                     "command": "com.smile.commands.NeedNoodle"
                                 }

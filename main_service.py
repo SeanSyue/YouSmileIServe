@@ -58,7 +58,8 @@ def send_command(assistant_, query, delay=6.0):
 
 def fetch_menu(menu_file):
     """ Open menu file and return available meal options in text pattern """
-    sleep(4)
+    # wait for last conversation finished
+    sleep(3.7)
     print('[FILE OPENED]')
     with open(menu_file) as f:
         menu_list = [item.strip() for item in f.readlines()]
@@ -110,9 +111,6 @@ def process_event(event, assistant_):
     # begin ordering session
     if event.type == EventType.ON_START_FINISHED:
         assistant_.send_text_query('customer start ordering')
-        # assistant_.send_text_query('I want chicken rice')
-        # assistant_.send_text_query('I want rice')
-        # assistant_.send_text_query('bye')
 
     if event.type == EventType.ON_DEVICE_ACTION:
         for command, params in event.actions:
@@ -147,14 +145,14 @@ def process_event(event, assistant_):
                 # rice_options = 'pork rice and chicken rice are'
                 rice_options = fetch_menu(RICE_MENU)
                 send_command(assistant_, 'customer need rice meal recommendation, '
-                                         '{} now available.'.format(rice_options), 6)
+                                         '{} now available.'.format(rice_options), 10)
 
             # customer ask for rice noodle options
             if command == 'com.smile.commands.NeedNoodle':
                 # noodle_options = 'beef noodle and chicken noodle are'
                 noodle_options = fetch_menu(NOODLE_MENU)
                 send_command(assistant_, 'customer need noodle meal recommendation, '
-                                         '{} now available.'.format(noodle_options), 6)
+                                         '{} now available.'.format(noodle_options), 10)
 
             # quit session manually
             if command == 'com.smile.commands.ConversationFinished':
@@ -241,11 +239,13 @@ def main():
 
             # start smile detection for activating assistant
             is_smiled = detect_smile()
+            # if smile is detected, start ordering session
             if is_smiled is True:
                 assistant.set_mic_mute(False)
                 for event in events:
                     is_over = process_event(event, assistant)
                     if is_over:
+                        # Restart a new session of ordering
                         break
 
 
