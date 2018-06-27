@@ -6,7 +6,7 @@
       <excludePattern pattern="gactions" />
       <excludePattern pattern="*data" />
     </content>
-    <orderEntry type="jdk" jdkName="Rpi (sftp://pi@192.168.1.172:22/home/pi/.virtualenvs/u-smile/bin/python3)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="System Python 3.6" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TestRunnerService">
