@@ -53,7 +53,6 @@ def send_command(assistant_, query, delay=6.0):
     """ Send command to trigger certain events, then assistant listen to customer's speech """
     assistant_.send_text_query(query)
     sleep(delay)
-    # print("[INFO] sent command:\n", query)
     assistant_.start_conversation()
 
 
@@ -97,7 +96,7 @@ def check_available_meal(assistant_, params_, meal_):
     options = fetch_menu(menu_file)
 
     if query in options:
-        send_command(assistant_, 'order confirmed, should notify customer to pay for the meal', 7.5)
+        send_command(assistant_, 'order confirmed, should notify customer to pay for the meal', 8.5)
     else:
         send_command(assistant_, '{} is not available, customer should try something other'.format(query), 6)
 
@@ -126,35 +125,38 @@ def process_event(event, assistant_):
 
     # begin ordering session
     if event.type == EventType.ON_START_FINISHED:
-        # assistant_.send_text_query('customer start ordering')
+        assistant_.send_text_query('customer start ordering')
         # assistant_.send_text_query('I want noodle')
         # assistant_.send_text_query('I want rice')
         # assistant_.send_text_query('customer need rice meal recommendation')
         # assistant_.send_text_query('customer need rice')
         # assistant_.send_text_query('we need gold')
         # assistant_.send_text_query('we need silver')
-        # assistant_.send_text_query('repeat with me: pork rice and chicken rice')
         # assistant_.send_text_query('I want beef noodle')
-        assistant_.send_text_query('customer finished payment')
+        # assistant_.send_text_query('customer finished payment')
 
     if event.type == EventType.ON_DEVICE_ACTION:
         for command, params in event.actions:
             print('Do command', command, 'with params', str(params))
 
-            # send 'meal is ready' after payment that followed by certain delay
-            if command == 'com.smile.commands.FinishPayment':
-                send_command(assistant_, 'meal is ready', 6)
-
             # scan QR code
             if command == 'com.smile.commands.MakeOrdering':
                 is_finished = scan_qrcode()
                 if is_finished:
+                    sleep(2)
                     assistant_.send_text_query('customer finished payment')
-                    sleep(6)
+                    sleep(5)
+
+            # send 'meal is ready' after payment that followed by certain delay
+            if command == 'com.smile.commands.FinishPayment':
+                # send_command(assistant_, 'meal is ready', 8)
+                # sleep(2)
+                assistant_.send_text_query('meal is ready')
+                sleep(5)
 
             # notify that the meal is ready, then quit current ordering session
             if command == 'com.smile.commands.MealReady':
-                sleep(8.5)
+                sleep(9)
                 return True
 
             # check meal once customer ask for recommendation and order meal
@@ -269,8 +271,8 @@ def main():
                     print(WARNING_NOT_REGISTERED)
 
             # start smile detection for activating assistant
-            # is_smiled = detect_smile()
-            is_smiled = True
+            is_smiled = detect_smile()
+            # is_smiled = True
             # if smile is detected, start ordering session
             if is_smiled is True:
                 assistant.set_mic_mute(False)

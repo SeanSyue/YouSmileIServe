@@ -14,7 +14,7 @@ def detect_smile():
     is_smiled = False
 
     cap = ThreadCam(0)
-    cap.set_prop(320, 240, 30)
+    cap.set_prop(640, 480, 30)
     cap.start()
     sleep(1)
 
@@ -54,9 +54,9 @@ def scan_qrcode():
     print("[INFO] Start scanning QR code!")
     is_payed = False
     camera = PiCamera()
-    camera.resolution = (320, 240)
+    camera.resolution = (640, 480)
     camera.framerate = 30
-    rawCapture = PiRGBArray(camera, size=(320, 240))
+    rawCapture = PiRGBArray(camera, size=(640, 480))
     # allow the camera to warmup
     sleep(3)
     # capture frames from the camera
