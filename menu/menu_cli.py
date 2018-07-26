@@ -1,5 +1,5 @@
-from os.path import join as join_path
-import fire
+from pkg_resources import resource_filename
+
 
 MENU_PATH = '/home/pi/WORKSPACE/YouSmileIServe/menu'
 
@@ -29,22 +29,5 @@ def show(menu):
     print("===== {} menu ======".format(menu))
     with open(join_path(MENU_PATH, '{}_menu.txt'.format(menu)), 'r') as f:
         for item in [meal.strip() for meal in f.readlines()]:
-            # print(item)
             menu_list.append(item)
-    # print("\n")
     return menu_list
-
-
-# def run_cli():
-#     fire.Fire({
-#         'add': add,
-#         'remove': remove,
-#         'show': show
-#     })
-
-if __name__ == '__main__':
-    fire.Fire({
-        'add': add,
-        'remove': remove,
-        'show': show
-    })
