@@ -5,7 +5,8 @@ from PyQt4.QtGui import QApplication, QMainWindow
 
 from menu_cli import add, remove, show
 
-ui_filename = os.path.splitext(__file__)[0] + '.ui'
+# MUST use '.py' instead of 'py', cus we don't wanna modify the "python 3.x" statement in '__file__' string
+ui_filename = __file__.replace('.py', '.ui')
 ui_menu = uic.loadUiType(ui_filename)[0]
 
 
@@ -49,7 +50,7 @@ class MenuGUI(QMainWindow, ui_menu):
         self.lineEdit.setText("")
 
 
-if __name__ == '__main__':
+def run_gui():
     app = QApplication(sys.argv)
     ui_window = MenuGUI(None)
     ui_window.show()
