@@ -11,7 +11,7 @@ setup(
         "menu": ['rice_menu.txt', 'noodle_menu.txt', 'menu_gui.ui']
     },
     entry_points={
-        "console_scripts": ['menu = menu.menu_cli:run_cli'],
-        "gui_scripts": ['menu-gui=menu.menu_gui:run_gui']
+        "console_scripts": ['menu=menu:run_cli'],
+        "gui_scripts": ['menu-gui=menu:run_gui']
     },
 )
