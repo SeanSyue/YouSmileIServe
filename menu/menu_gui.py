@@ -48,10 +48,3 @@ class MenuGUI(QMainWindow, ui_menu):
         add(str(self.cbmenu.currentText()), str(self.lineEdit.text()))
         self.menu_list_show()
         self.lineEdit.setText("")
-
-
-def run_gui():
-    app = QApplication(sys.argv)
-    ui_window = MenuGUI(None)
-    ui_window.show()
-    app.exec_()
