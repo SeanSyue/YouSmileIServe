@@ -1,7 +1,17 @@
 import sys
+import fire
 from PyQt4.QtGui import QApplication
+from .menu_gui import MenuGUI
+from .menu_manager import remove, add, show
 
-from menugui import MenuGUI
+
+def run_cli():
+    fire.Fire({
+        "remove": remove,
+        "add": add,
+        "show": show
+    })
+
 
 def run_gui():
     app = QApplication(sys.argv)
